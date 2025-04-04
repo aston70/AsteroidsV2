@@ -1,14 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asteroids Version 2: Team 12, COSC559</title>     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.11.1/p5.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.11.1/addons/p5.sound.min.js"></script>
     <link rel="stylesheet" type="text/css" href="style.css">
     <meta charset="utf-8" />
-
+    <script src="help.js"></script>
   </head>
   <body>
     <main>
+      <button onclick="showHelp()">Show Help</button>
     </main>
     <script src="objects/ship.js"></script>          <!-- Ship class -->
     <script src="objects/shipMovement.js"></script>  <!-- Ship Movement class -->    
@@ -21,6 +24,72 @@
     
     <!-- Main game logic -->
     <script src="sketch.js"></script>
+        
+    <div id="helpModal" class="modal">
+        <div class="modal-content">
+            <h1>Asteroids Game Help Guide - Version 2</h1>
+            <div id="section1">
+                <h2>Objective</h2>
+                <p>Your mission is to eliminate the enemy ship before it destroys all the asteroids. The ship is quick, so you need to be fast and precise. You control a UFO with similar movement to the ship, and your task is to prevent the ship from completing its mission.</p>
+                <p>You can only fire in short bursts, and your bullets will always fire in the direction the ship is pointing.</p>
+            </div>
+
+            <div id="section2" style="display:none;">
+                <h2>Controls</h2>
+                <h3>Movement</h3>
+                <div class="keys">
+                    <ul>
+                        <li><span class="key">↑</span><span>Thrust forward</span></li>
+                        <li><span class="key">←</span><span>Rotate left</span></li>
+                        <li><span class="key">→</span><span>Rotate right</span></li>
+                    </ul>
+                </div>
+                <h3>Shooting</h3>
+                <div class="keys">
+                    <ul>
+                        <li>
+                            <span class="key">Space</span>
+                            <span>Fire bullets in the direction of the UFO's rotation</span>
+                        </li>
+                    </ul>    
+                </div>
+            </div>
+
+            <div id="section3" style="display:none;">
+                <h2>Scoring</h2>
+                <ul>
+                    <li>Hit the ship with a bullet: <strong>75 points</strong></li>
+                    <li>UFO collides with the ship (one time per round): <strong>500 points</strong></li>
+                    <li>Destroy the ship: <strong>100 points</strong></li>
+                    <li>Remaining asteroids after the ship is destroyed: <strong>7 bonus points per asteroid</strong></li>
+                </ul>
+            </div>
+
+            <div id="section4" style="display:none;">
+                <h2>Dangers & Health</h2>
+                <ul>
+                    <li><strong>UFO touch with the ship</strong>: Reduces ship health by <strong>50%</strong></li>
+                    <li><strong>Ship's attacks</strong>: The ship's will attack you if you get close. Each hit reduces health 20%</li>
+                    <li><strong>Game over</strong>: when the ship destroys all asteroids or when your health reaches <strong>0%</strong></li>
+                </ul>
+            </div>
+
+            <div id="section5" style="display:none;">
+                <h2>Tips for Success</h2>
+                <ul>
+                    <li>Be quick! The ship can destroy asteroids fast, so time is of the essence.</li>
+                    <li>Don't sit still.</li>
+                    <li>Fire as many rounds as you can.</li>
+                    <li>Touch the ship once to reduce its health by 50%, but avoid direct collisions.</li>
+                    <li>Focus on taking out the ship before it destroys too many asteroids.</li>
+                </ul>
+
+                <p><strong>Good luck, pilot!</strong></p>              
+            </div>
+
+            <button id="modalButton" onclick="nextSection()">Next</button>
+        </div>
+    </div>
         
   </body>
 </html>

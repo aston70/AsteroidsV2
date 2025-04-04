@@ -4,6 +4,7 @@
 // Points if ship crashes into asteroid.
 
 const highScoreID = "highScorev2";
+let pauseGame = true;
 let ship;
 let shipMovement;
 let ufo;
@@ -20,21 +21,37 @@ let score = 0;
 let highScore = localStorage.getItem(highScoreID) ? parseInt(localStorage.getItem(highScoreID)) : 0;
 let stars = [];
 let numStars = 500;
+const resetHighscorePosition = { widthOffset: 170, y: 65 };
 
 function preload() {   
   loadSounds();
 }
 
+function getCanvasSize() {  
+  return { x: windowWidth, y: windowHeight - 40 };
+}
+
 function windowResized() {
-  resizeCanvas(windowWidth, windowHeight);
-  positionGameButton(startGameButton);
-  positionGameButton(playAgainButton);
+  let canvaseSize = getCanvasSize();
+  resizeCanvas(canvaseSize.x, canvaseSize.y);
+  
+  if (startGameButton) {
+    positionGameButton(startGameButton, height / 2 + 20);
+  }
+  if (playAgainButton) {
+    positionGameButton(playAgainButton, height / 2 + 70);
+  }
+  if (resetHighScoreButton) {
+    resetHighScoreButton.position(
+      width - resetHighscorePosition.widthOffset, resetHighscorePosition.y);
+  }
   createStars();
 }
 
 function setup() {
   
-  createCanvas(windowWidth, windowHeight);
+  let canvaseSize = getCanvasSize();
+  createCanvas(canvaseSize.x, canvaseSize.y);
   
   // If sound gets crashy - turn it off with this...
   //getAudioContext().suspend(); // Suspend audio context
@@ -46,6 +63,10 @@ function setup() {
 
 function draw() {
     
+  if (pauseGame) { 
+    return;
+  }
+  
   background(0);
 
   if (gameOver) {
@@ -55,6 +76,7 @@ function draw() {
   }
 
   displayScore();
+  displayHealth();
   
 }
 
@@ -76,6 +98,8 @@ function resetGame() {
 }
 
 function startGame() {
+  
+  pauseGame = false;
   
   if(startGameButton) {
     startGameButton.hide();
@@ -118,8 +142,10 @@ function keyPressed() {
     ufo.setRotation(-0.1);
   }
   else if (keyCode === UP_ARROW && ufo) {
-    ufo.boosting(true);
-    playSound(thrustSound, true);
+    if(ufo && !ufo.isBoosting) {
+      ufo.boosting(true);
+      playSound(thrustSound, true);
+    }    
   } 
   else if (key === ' ' && ufo) {
     ufo.fireBulletAtShip();
@@ -159,7 +185,7 @@ function createStartGameButton() {
   startGameButton.size(200, 50);
   startGameButton.style('font-size', '24px');
   startGameButton.mousePressed(startGame);
-  positionGameButton(startGameButton);
+  positionGameButton(startGameButton, height / 2 + 20);
   startGameButton.show();
 }
 
@@ -168,22 +194,25 @@ function createPlayAgainButton() {
   playAgainButton.size(200, 50);
   playAgainButton.style('font-size', '24px');
   playAgainButton.mousePressed(resetGame);
-  positionGameButton(playAgainButton);
+  positionGameButton(playAgainButton, height / 2 + 50);
   playAgainButton.hide();
 }
 
-function positionGameButton(button) {
+function positionGameButton(button, y) {
   if(button) {
-       button.position(width / 2 - button.width / 2, height / 2 + 30);
+       button.position(width / 2 - button.width / 2, y);
   }
 }
 
 function createResetHighScoreButton() {
   // Create the reset button once
-  resetHighScoreButton = createButton('Reset');
-  resetHighScoreButton.size(80, 30);   // Smaller size
+  resetHighScoreButton = createButton('Reset High Score');
+  resetHighScoreButton.size(150, 30);   // Smaller size
   resetHighScoreButton.style('font-size', '14px');
   resetHighScoreButton.mousePressed(resetHighScore);
+  resetHighScoreButton.hide();
+  resetHighScoreButton.position(
+    width - resetHighscorePosition.widthOffset, resetHighscorePosition.y);  
 }
 
 function showPlayAgain() {
@@ -398,10 +427,35 @@ function displayScore() {
   // Display high score
   textAlign(RIGHT);
   text(`High Score: ${highScore}`, width - 20, 30);
-  
-  // Position the reset button below the high score
-  resetHighScoreButton.position(width - 110, 40);  
 }
+
+function displayHealth() {
+  
+  if(!ufo){
+    return;
+  }
+  
+  let health = constrain(ufo.health, 0, 100);
+  
+  fill(255);
+  textSize(20);
+  textAlign(LEFT);
+  text(`Health: ${health}`, 20, 60);
+
+  // Calculate the health bar color from green to red based on the health value
+  let healthColor = lerpColor(color(0, 255, 0), color(255, 0, 0), 1 - (health / 100));
+
+  // Draw the health bar
+  noStroke();
+  fill(healthColor); // Set fill color based on health
+  rect(20, 80, 200 * (health / 100), 20); // Health bar width corresponds to health percentage
+
+  // Optionally, you can add a border around the health bar
+  stroke(255); // White border
+  noFill();
+  rect(20, 80, 200, 20); // Draw border around the health bar
+}
+
 
 // After the game ends, compare score with highScore. Update highScore
 // if the current score is higher. Store the new highScore in localStorage.
