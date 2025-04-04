@@ -1,7 +1,6 @@
 class UFO {
     
   constructor(ship, bulletSound) {
-    console.log(window.innerHeight);
     this.ship = ship;
     this.pos = createVector(Math.random() * window.innerWidth, window.innerHeight-100);
     this.vel = createVector(0, 0);
@@ -109,8 +108,6 @@ class UFO {
         this.burstCount = 0; // Reset burst count after cooldown
     }
 
-    console.log("firing!!");
-
     const shipX = this.ship.pos.x;
     const shipY = this.ship.pos.y;
 
@@ -139,33 +136,6 @@ class UFO {
     this.lastShotTime = currentTime;
     this.burstCount++;
   }
-
-
-//   handleUFObullets() {
-//     for (let i = this.ufoBullets.length - 1; i >= 0; i--) {
-//       this.ufoBullets[i].update();
-//       this.ufoBullets[i].show();
-
-//       if (this.ufoBullets[i].offscreen()) {
-//         if (this.bulletSound && this.bulletSound.isPlaying()) {
-//           this.bulletSound.stop();  // Stop lingering sound
-//         }        
-//         this.ufoBullets.splice(i, 1);
-//       } else {
-//         this.checkBulletCollisions(i);  // Call method on the same object
-//       }
-//     }
-//   }
-
-//   checkBulletCollisions(i) {
-//     if (this.ufoBullets[i].hits(this.ship)) {
-//       this.ship.takeDamage(10);
-//         if (this.bulletSound && this.bulletSound.isPlaying()) {
-//           this.bulletSound.stop();  // Stop lingering sound
-//         }           
-//       this.ufoBullets.splice(i, 1);
-//     }
-//   }
 
   destroy() {
     if (!this.active) return;
